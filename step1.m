@@ -37,7 +37,16 @@ cost(1) = sqrt(traceErr);
 % Eu-NMFの更新式
 for iItr = 1:nItr
     W = W .* ( (X*H.') ./ (W*(H*H.')) );
-    H = H .* ( (W.'*X) ./ ((W.'*W)*H) );
+    H = H .* ( (W.'*X) ./ ((W.'*W)*H) );    
+    
+    % Wの列毎に正規化係数を計算（列の総和）
+    % todo
+    
+    % Wに正規化係数を適用
+    % todo
+
+    % Hに正規化係数を適用
+    % todo
 
     % フロベニウスノルムの二乗値計算
     err = X - W*H;
