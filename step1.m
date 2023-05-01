@@ -27,7 +27,12 @@ W = rand(I, K);
 H = rand(K, J);
 
 % コスト関数値格納行列定義
-valueFr = zeros(nItr,1);
+cost = zeros(nItr + 1,1);
+
+% コスト関数値の初期値格納(フロベニウスノルムの二乗値計算)
+err = X - W*H;
+traceErr = sum(err.*err, 'all');
+cost(1) = sqrt(traceErr);
 
 % Eu-NMFの更新式
 for iItr = 1:nItr
@@ -37,12 +42,19 @@ for iItr = 1:nItr
     % フロベニウスノルムの二乗値計算
     err = X - W*H;
     traceErr = sum(err.*err, 'all');
-    valueFr(iItr) = sqrt(traceErr);
+    cost(iItr+1) = sqrt(traceErr);
 end
 
 % 近似された観測行列の表示
 Xhat = W*H;
 figure; imagesc(Xhat);
 
-%コスト関数値のグラフ描画
-figure; plot(valueFr);
+% コスト関数値のグラフ描画(線形)
+figure; plot(cost);
+xlabel("反復回数", "FontSize", 14);
+ylabel("コスト関数値(線形軸)", "FontSize", 14);
+
+% コスト関数値のグラフ描画(対数軸)
+figure; semilogy(cost);
+xlabel("反復回数", "FontSize", 14);
+ylabel("コスト関数値(対数軸)", "FontSize", 14);
