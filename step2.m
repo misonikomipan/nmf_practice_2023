@@ -41,7 +41,7 @@ for iItr = 1:nItr
 
     % Wの列毎に正規化係数を計算（列の総和）
     % todo
-    nomalC = sum(W);
+    nomalC = sum(W,1);
 
     % Wに正規化係数を適用
     % todo
@@ -56,19 +56,19 @@ for iItr = 1:nItr
     end
 
     % WHが変化しないことの確認
-    nowWH = W*H;
-    if(nowWH - prevWH > 10^-15)
+    nomalWH = W*H;
+    if(nomalWH - prevWH > 10^-15)
         cntErr = cntErr + 1;
     end
 
     % フロベニウスノルムの二乗値計算
-    err = X - W*H;
+    err = X - nomalWH;
     traceErr = sum(err.*err, 'all');
     cost(iItr+1) = sqrt(traceErr);
 end
 
 % 近似された観測行列の表示
-Xhat = W*H;
+Xhat = nomalWH;
 figure; imagesc(Xhat);
 
 % コスト関数値のグラフ描画(線形)
