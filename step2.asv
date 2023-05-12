@@ -28,9 +28,6 @@ err = X - W*H;
 traceErr = sum(err.*err, 'all');
 cost(1) = sqrt(traceErr);
 
-% 正規化によるWHが変化しないことの確認
-cntErr = 0;
-
 % Eu-NMFの更新式
 for iItr = 1:nItr
     W = W .* ( (X*H.') ./ (W*(H*H.')) );
@@ -55,11 +52,7 @@ for iItr = 1:nItr
         end
     end
 
-    % WHが変化しないことの確認
-    nowWH = W*H;
-    if(nowWH - prevWH > 10^-15)
-        cntErr = cntErr + 1;
-    end
+    
 
     % フロベニウスノルムの二乗値計算
     err = X - W*H;
