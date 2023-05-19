@@ -20,63 +20,131 @@ figure; imagesc(X);
 W = rand(I, K);
 H = rand(K, J);
 
+% ------ Eu-NMF ------
 % コスト関数値格納行列定義
-cost = zeros(nItr + 1,1);
+cost_EuNMF = zeros(nItr + 1,1);
+W_Eu = W;
+H_Eu = H;
 
 % コスト関数値の初期値格納(フロベニウスノルムの二乗値計算)
-err = X - W*H;
+err = X - W_Eu*H_Eu;
 traceErr = sum(err.*err, 'all');
-cost(1) = sqrt(traceErr);
+cost_EuNMF(1) = sqrt(traceErr);
 
 % 正規化によるWHが変化しないことの確認
 cntErr = 0;
 
 % Eu-NMFの更新式
 for iItr = 1:nItr
-    W = W .* ( (X*H.') ./ (W*(H*H.')) );
-    H = H .* ( (W.'*X) ./ ((W.'*W)*H) );    
+    W_Eu = W_Eu .* ( (X*H_Eu.') ./ (W_Eu*(H_Eu*H_Eu.')) );
+    H_Eu = H_Eu .* ( (W_Eu.'*X) ./ ((W_Eu.'*W_Eu)*H_Eu) );    
     
     % WHが変化しないことの確認
-    prevWH = W*H;
+    prevWH = W_Eu*H_Eu;
 
     % Wの列毎に正規化係数を計算（列の総和）
     % todo
-    nomalC = sum(W,1);
+    nomalC_Eu = sum(W_Eu,1);
 
     % Wに正規化係数を適用
     % todo
-    W = W ./ nomalC;
+    W_Eu = W_Eu ./ nomalC_Eu;
        
     % Hに正規化係数を適用
     % todo
     for i = 1:K
         for j = 1:J
-            H(i,j) = nomalC(i) * H(i,j);
+            H_Eu(i,j) = nomalC_Eu(i) * H_Eu(i,j);
         end
     end
 
     % WHが変化しないことの確認
-    nomalWH = W*H;
-    if(nomalWH - prevWH > 10^-15)
+    nomalWH_Eu = W_Eu*H_Eu;
+    if(nomalWH_Eu - prevWH > 10^-15)
         cntErr = cntErr + 1;
     end
 
     % フロベニウスノルムの二乗値計算
-    err = X - nomalWH;
+    err = X - nomalWH_Eu;
     traceErr = sum(err.*err, 'all');
-    cost(iItr+1) = sqrt(traceErr);
+    cost_EuNMF(iItr+1) = sqrt(traceErr);
 end
 
 % 近似された観測行列の表示
-Xhat = nomalWH;
-figure; imagesc(Xhat);
+Xhat_Eu = nomalWH_Eu;
+figure; imagesc(Xhat_Eu);
 
 % コスト関数値のグラフ描画(線形)
-figure; plot(cost);
+figure; plot(cost_EuNMF);
 xlabel("反復回数", "FontSize", 14);
 ylabel("コスト関数値(線形軸)", "FontSize", 14);
 
 % コスト関数値のグラフ描画(対数軸)
-figure; semilogy(cost);
+figure; semilogy(cost_EuNMF);
 xlabel("反復回数", "FontSize", 14);
 ylabel("コスト関数値(対数軸)", "FontSize", 14);
+
+% ------ KL-NMF ------
+W_KL = W;
+H_KL = H;
+% コスト関数値格納行列定義
+cost_KLNMF = zeros(nItr + 1,1);
+
+% コスト関数値の初期値格納(フロベニウスノルムの二乗値計算)
+err = X - W_KL*H_KL;
+traceErr = sum(err.*err, 'all');
+cost_KLNMF(1) = sqrt(traceErr);
+
+% KL-NMFの更新式
+for iItr = 1:nItr
+    W_KL = W_KL .* (((X./(W_KL*H_KL))*H_KL.')./ (ones(I,J)*H_KL.'));
+    H_KL = H_KL .* ((W_KL.'*(X./(W_KL*H_KL))) ./ (W_KL.'*ones(I,J)));
+
+    % Wの列毎に正規化係数を計算（列の総和）
+    % todo
+    nomalC_KL = sum(W_KL,1);
+
+    % Wに正規化係数を適用
+    % todo
+    W_KL = W_KL ./ nomalC_KL;
+       
+    % Hに正規化係数を適用
+    % todo
+    for i = 1:K
+        for j = 1:J
+            H_KL(i,j) = nomalC_KL(i) * H_KL(i,j);
+        end
+    end
+
+    nomalWH_KL = W_KL * H_KL;
+    % フロベニウスノルムの二乗値計算
+    err_KL = X - nomalWH_KL;
+    traceErr_KL = sum(err_KL.*err_KL, 'all');
+    cost_KLNMF(iItr+1) = sqrt(traceErr_KL);
+end
+
+% 近似された観測行列の表示
+Xhat_KL = nomalWH_KL;
+figure; imagesc(Xhat_KL);
+
+% コスト関数値のグラフ描画(線形)
+figure; plot(cost_KLNMF);
+xlabel("反復回数", "FontSize", 14);
+ylabel("コスト関数値(線形軸)", "FontSize", 14);
+
+% コスト関数値のグラフ描画(対数軸)
+figure; semilogy(cost_KLNMF);
+xlabel("反復回数", "FontSize", 14);
+ylabel("コスト関数値(対数軸)", "FontSize", 14);
+
+
+% ------ IS-NMF ------
+W_IS = W;
+H_IS = H;
+% コスト関数値格納行列定義
+cost_ISNMF = zeros(nItr + 1,1);
+
+% コスト関数値の初期値格納(フロベニウスノルムの二乗値計算)
+err = X - W_IS*H_IS;
+traceErr = sum(err.*err, 'all');
+cost_ISNMF(1) = sqrt(traceErr);
