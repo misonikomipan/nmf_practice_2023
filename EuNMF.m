@@ -52,11 +52,7 @@ for iItr = 1:nItr
        
     % Hに正規化係数を適用
     % todo
-    for i = 1:K
-        for j = 1:J
-            H_Eu(i,j) = nomalC_Eu(i) * H_Eu(i,j);
-        end
-    end
+    H_Eu = nomalC_Eu.' .*H_Eu;
 
     % WHが変化しないことの確認
     nomalWH_Eu = W_Eu*H_Eu;
@@ -83,6 +79,3 @@ ylabel("コスト関数値(線形軸)", "FontSize", 14);
 figure; semilogy(cost_EuNMF);
 xlabel("反復回数", "FontSize", 14);
 ylabel("コスト関数値(対数軸)", "FontSize", 14);
-err = X - W_IS*H_IS;
-traceErr = sum(err.*err, 'all');
-cost_ISNMF(1) = sqrt(traceErr);

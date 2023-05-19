@@ -52,11 +52,7 @@ for iItr = 1:nItr
        
     % Hに正規化係数を適用
     % todo
-    for i = 1:K
-        for j = 1:J
-            H_Eu(i,j) = nomalC_Eu(i) * H_Eu(i,j);
-        end
-    end
+    H_Eu = nomalC_Eu.' .*H_Eu;
 
     % WHが変化しないことの確認
     nomalWH_Eu = W_Eu*H_Eu;
@@ -110,7 +106,7 @@ for iItr = 1:nItr
        
     % Hに正規化係数を適用
     % todo
-    H_KL = nomalC.' .*H_KL;
+    H_KL = nomalC_KL.' .*H_KL;
 
     nomalWH_KL = W_KL * H_KL;
     % フロベニウスノルムの二乗値計算

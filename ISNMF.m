@@ -30,3 +30,26 @@ cost_ISNMF = zeros(nItr + 1,1);
 err = X - W_IS*H_IS;
 traceErr = sum(err.*err, 'all');
 cost_ISNMF(1) = sqrt(traceErr);
+
+% IS-NMFの更新式
+for iItr = 1:nItr
+    W_IS = W_IS .* ( (X*H_IS.') ./ (W_IS*(H_IS*H_IS.')) );
+    H_IS = H_IS .* ( (W_IS.'*X) ./ ((W_IS.'*W_IS)*H_IS) );    
+
+    % Wの列毎に正規化係数を計算（列の総和）
+    % todo
+    nomalC = sum(W_IS,1);
+
+    % Wに正規化係数を適用
+    % todo
+    W_IS = W_IS ./ nomalC;
+       
+    % Hに正規化係数を適用
+    % todo
+    H_KL = nomalC.' .*H_IS;
+
+    % フロベニウスノルムの二乗値計算
+    err = X - W_IS*H_IS;
+    traceErr = sum(err.*err, 'all');
+    cost_EuNMF(iItr+1) = sqrt(traceErr);
+end
