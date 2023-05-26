@@ -16,7 +16,7 @@ X = trueW * trueH; % ランクKの非負観測行列
 % Xの表示
 figure; imagesc(X);
 
-[W_EU, H_EU] = NMF(X, K, "convergenceCurve",true,"nItr",nItr,"typeCostFunction","KL");
+[W_EU, H_EU] = NMF(X, K, "convergenceCurve",true,"nItr",nItr,"typeCostFunction","EU");
 
 % 近似された観測行列の表示
 Xhat_EU = W_EU*H_EU;
