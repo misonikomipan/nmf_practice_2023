@@ -85,7 +85,7 @@ fontsize(gca, 15, "pixels");
 ylabel("周波数 [Hz]", 'FontSize', 18);
 xlabel("時間 [s]", 'FontSize', 18);
 caxis([0 80]);
-ylim([0 5000]);
+ylim([0 10000]);
 colorbar;
 
 end
