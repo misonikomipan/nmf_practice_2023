@@ -13,7 +13,7 @@ function [W, H] = NMF(X,K,args)
 %
 
 arguments
-    X (:,:) double {mustBeReal, mustBePositive}
+    X (:,:) double {mustBeReal, mustBeNonnegative}
     K (1,1) double {mustBePositive, mustBeInteger}
     args.nItr (1,1) double {mustBePositive, mustBeInteger} = 1000
     args.typeCostFunction string {mustBeMember(args.typeCostFunction, ["EU","KL","IS"])} = "EU"
