@@ -24,3 +24,46 @@ M = not(isnan(losX));
 % NMF変数の乱数初期化
 W = rand(nRow, rank);
 H = rand(rank, nCol);
+
+% 更新回数
+nItr = 1000;
+
+% EuNMF 
+% コスト関数値格納行列
+cost = zeros(nItr + 1, 1);
+
+% コスト関数値の初期値格納(フロベニウスノルムの二乗値計算)
+err = M .* (losX - W*H);
+cost(1) = sqrt(sum(err.^2, "all"));
+
+% NaNを0に変換(losX .* M)
+maskX = fillmissing(losX, "constant", 0);
+
+for iItr = 1:nItr
+    % EuNMFの更新式
+    W = W .* ((maskX * H.') ./ (W*H.*M*H.'));
+    H = H .* ((W.' * maskX) ./ (W.' * (W*H.*M)) );
+
+
+    % 正規化
+    normalC = sum(W, 1);
+    W = W ./ normalC;
+    H = normalC.' .* H;
+
+    % コスト計算
+    err = fillmissing(losX - W*H, "constant", 0);
+    cost(iItr+1) = sqrt(sum(err.^2, "all"));
+end
+
+% 近似された観測行列の表示
+Xhat = W * H;
+figure; plot(cost);
+title("コスト関数値推移");
+xlabel("反復回数");
+ylabel("コスト");
+figure; imagesc(X);
+title("完全な観測行列");
+figure; imagesc(Xhat);
+title("近似行列");
+figure; imagesc(abs(X-Xhat));
+title("誤差[abs(X - Xhat)]");
