@@ -75,6 +75,7 @@ M = not(isnan(X));
 % 入力行列の欠損値を0に置換
 X = fillmissing(X, "constant", 0);
 % コスト関数値の格納行列定義，初期値格納
+cost = 0;
 if(args.convergenceCurve)
     cost = zeros(args.nItr + 1,1);
     cost(1) = local_FrobeniusNorm(X,W*H,M);
@@ -99,6 +100,7 @@ M = not(isnan(X));
 % 入力行列の欠損値を0に置換
 X = fillmissing(X, "constant", 0);
 % コスト関数値の格納行列定義，初期値格納
+cost = 0;
 if(args.convergenceCurve)
     cost = zeros(args.nItr + 1,1);
     cost(1) = local_FrobeniusNorm(X,W*H,M);
@@ -124,6 +126,7 @@ M = not(isnan(X));
 % 入力行列の欠損値を0に置換
 X = fillmissing(X, "constant", 0);
 % コスト関数値の格納行列定義，初期値格納
+cost = 0;
 if(args.convergenceCurve)
     cost = zeros(args.nItr + 1,1);
     cost(1) = local_FrobeniusNorm(X,W*H,M);
